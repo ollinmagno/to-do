@@ -19,8 +19,15 @@ public class Tarefa {
 	private boolean ativo;
 	private boolean realizado;
 	private LocalDateTime dataDeCriacao = LocalDateTime.now();
-	private LocalDateTime dataDeModificacao;
-	
+	private LocalDateTime dataDeModificacao = LocalDateTime.now();
+	private long tempoDeDuracaoEmHoras;
+
+	@Override
+	public String toString() {
+		return "Tarefa [id=" + id + ", ativo=" + ativo + ", realizado=" + realizado + ", dataDeCriacao=" + dataDeCriacao
+				+ ", dataDeModificacao=" + dataDeModificacao + ", tempoDeDuracaoEmHoras=" + tempoDeDuracaoEmHoras + "]";
+	}
+
 	public Tarefa() {
 
 	}
@@ -31,6 +38,14 @@ public class Tarefa {
 		this.descricao = descricao;
 		this.ativo = ativo;
 		this.realizado = realizado;
+	}
+
+	public long getTempoDeDuracaoEmHoras() {
+		return tempoDeDuracaoEmHoras;
+	}
+
+	public void setTempoDeDuracaoEmHoras(long tempoDeDuracaoEmHoras) {
+		this.tempoDeDuracaoEmHoras = tempoDeDuracaoEmHoras;
 	}
 
 	public LocalDateTime getDataDeModificacao() {
