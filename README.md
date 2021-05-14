@@ -20,7 +20,7 @@
 <br><br>
 
 @GetMapping(value = "/tarefasAtivas") <br>
-● Usuário pode ver uma lista com todos as tarefas realizadas; 
+● Usuário pode ver uma lista com todos as tarefas ativas; 
 <br><br>
 
 ● Usuário pode ver a data que foi criada a tarefa;
