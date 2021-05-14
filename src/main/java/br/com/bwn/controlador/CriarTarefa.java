@@ -1,6 +1,7 @@
 package br.com.bwn.controlador;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bwn.modelo.Tarefa;
@@ -31,13 +33,13 @@ public class CriarTarefa {
 
 	@PostMapping
 	public Tarefa criarTarefa(@RequestBody Tarefa tarefa) {
+		System.out.println(tarefa.toString());
 		return repositorio.save(tarefa);
 	}
 
 	@GetMapping(path = { "/{id}" })
 	public ResponseEntity<Tarefa> encontrarPorID(@PathVariable long id) {
 		Optional<Tarefa> tarefas = repositorio.findById(id);
-		System.out.println(tarefas.get().getDescricao());
 		if (tarefas.isPresent()) {
 			return new ResponseEntity<Tarefa>(tarefas.get(), HttpStatus.OK);
 		} else {
@@ -65,11 +67,10 @@ public class CriarTarefa {
 	}
 
 	@PutMapping(value = "marcarRealizada/{id}")
-	public ResponseEntity<Tarefa> marcarTarefaComoRealizada(@PathVariable("id") long id,
-			@RequestBody Tarefa realizarTarefa) {
+	public ResponseEntity<Tarefa> marcarTarefaComoRealizada(@PathVariable("id") long id) {
 		Optional<Tarefa> tarefaAntiga = repositorio.findById(id);
 		if (tarefaAntiga.isPresent()) {
-			tarefaAntiga.get().setRealizado(realizarTarefa.isRealizado());
+			tarefaAntiga.get().setRealizado(true);
 			repositorio.save(tarefaAntiga.get());
 			return new ResponseEntity<Tarefa>(tarefaAntiga.get(), HttpStatus.OK);
 		} else {
@@ -80,13 +81,21 @@ public class CriarTarefa {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Tarefa> editarTarefa(@PathVariable("id") long id, @RequestBody Tarefa editarTarefa) {
 		Optional<Tarefa> tarefaAntiga = repositorio.findById(id);
+		
 		if (tarefaAntiga.isPresent()) {
 			tarefaAntiga.get().setNome(editarTarefa.getNome());
 			tarefaAntiga.get().setDescricao(editarTarefa.getDescricao());
 			tarefaAntiga.get().setAtivo(editarTarefa.isAtivo());
 			tarefaAntiga.get().setRealizado(editarTarefa.isRealizado());
 			tarefaAntiga.get().setDataDeModificacao(LocalDateTime.now());
+
+			LocalDateTime agora = tarefaAntiga.get().getDataDeCriacao();
+			LocalDateTime finalizacao = LocalDateTime.now();
+			long diferencaEmDias = ChronoUnit.HOURS.between(agora, finalizacao);
+			tarefaAntiga.get().setTempoDeDuracaoEmHoras(diferencaEmDias);
+			
 			repositorio.save(tarefaAntiga.get());
+			
 			return new ResponseEntity<Tarefa>(tarefaAntiga.get(), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<Tarefa>(HttpStatus.NOT_FOUND);
