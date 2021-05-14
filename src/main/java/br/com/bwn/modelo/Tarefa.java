@@ -19,6 +19,7 @@ public class Tarefa {
 	private boolean ativo;
 	private boolean realizado;
 	private LocalDateTime dataDeCriacao = LocalDateTime.now();
+	private LocalDateTime dataDeModificacao;
 	
 	public Tarefa() {
 
@@ -30,6 +31,18 @@ public class Tarefa {
 		this.descricao = descricao;
 		this.ativo = ativo;
 		this.realizado = realizado;
+	}
+
+	public LocalDateTime getDataDeModificacao() {
+		return dataDeModificacao;
+	}
+
+	public void setDataDeModificacao(LocalDateTime dataDeModificacao) {
+		this.dataDeModificacao = dataDeModificacao;
+	}
+
+	public void setDataDeCriacao(LocalDateTime dataDeCriacao) {
+		this.dataDeCriacao = dataDeCriacao;
 	}
 
 	public LocalDateTime getDataDeCriacao() {
