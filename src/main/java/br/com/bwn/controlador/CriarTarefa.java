@@ -17,7 +17,7 @@ import br.com.bwn.modelo.Tarefa;
 import br.com.bwn.repositorio.ITarefaRepositorio;
 
 @RestController
-@RequestMapping({ "/tarefas" })
+@RequestMapping("/tarefas")
 public class CriarTarefa {
 
 	private ITarefaRepositorio repositorio;
@@ -34,7 +34,7 @@ public class CriarTarefa {
 	@GetMapping(path = { "/{id}" })
 	public ResponseEntity<Tarefa> encontrarPorID(@PathVariable long id) {
 		Optional<Tarefa> tarefas = repositorio.findById(id);
-		
+		System.out.println(tarefas.get().getDescricao());
 		if (tarefas.isPresent()) {
 			return new ResponseEntity<Tarefa>(tarefas.get(), HttpStatus.OK);
 		} else {
@@ -42,10 +42,22 @@ public class CriarTarefa {
 		}
 	}
 	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Tarefa> marcarTarefaComoRealizada(@PathVariable("id") long id, @RequestBody Tarefa realizarTarefa) {
+		Optional<Tarefa> tarefaAntiga = repositorio.findById(id);
+		if(tarefaAntiga.isPresent()) {
+			Tarefa tarefa = tarefaAntiga.get();
+			tarefa.setRealizado(realizarTarefa.isRealizado());
+			repositorio.save(tarefa);
+			return new ResponseEntity<Tarefa>(tarefa, HttpStatus.OK.CREATED);
+		}else {
+			return new ResponseEntity<Tarefa>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
 	
 	@GetMapping
-	public List<Tarefa> findAll() {
+	public List<Tarefa> encontrarTodasAsTarefas() {
 		return repositorio.findAll();
 	}
 
