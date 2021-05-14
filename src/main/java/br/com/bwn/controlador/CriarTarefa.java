@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,21 +42,31 @@ public class CriarTarefa {
 			return new ResponseEntity<Tarefa>(new Tarefa(), HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Tarefa> marcarTarefaComoRealizada(@PathVariable("id") long id, @RequestBody Tarefa realizarTarefa) {
+	public ResponseEntity<Tarefa> marcarTarefaComoRealizada(@PathVariable("id") long id,
+			@RequestBody Tarefa realizarTarefa) {
 		Optional<Tarefa> tarefaAntiga = repositorio.findById(id);
-		if(tarefaAntiga.isPresent()) {
-			Tarefa tarefa = tarefaAntiga.get();
-			tarefa.setRealizado(realizarTarefa.isRealizado());
-			repositorio.save(tarefa);
-			return new ResponseEntity<Tarefa>(tarefa, HttpStatus.OK.CREATED);
-		}else {
+		if (tarefaAntiga.isPresent()) {
+			tarefaAntiga.get().setRealizado(realizarTarefa.isRealizado());
+			repositorio.save(tarefaAntiga.get());
+			return new ResponseEntity<Tarefa>(tarefaAntiga.get(), HttpStatus.OK);
+		} else {
 			return new ResponseEntity<Tarefa>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
-	
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Tarefa> deletarTarefa(@PathVariable("id") long id) {
+		Optional<Tarefa> tarefa = repositorio.findById(id);
+		if (tarefa.isPresent()) {
+			repositorio.deleteById(id);;
+			return new ResponseEntity<Tarefa>(tarefa.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Tarefa>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@GetMapping
 	public List<Tarefa> encontrarTodasAsTarefas() {
 		return repositorio.findAll();
