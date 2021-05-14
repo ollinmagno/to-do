@@ -17,7 +17,7 @@ public class Tarefa {
 	private boolean ativo;
 	private boolean realizado;
 
-	Tarefa() {
+	public Tarefa() {
 
 	}
 
