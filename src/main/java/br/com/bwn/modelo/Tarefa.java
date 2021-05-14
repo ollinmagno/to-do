@@ -1,5 +1,7 @@
 package br.com.bwn.modelo;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,7 +18,8 @@ public class Tarefa {
 	private String descricao;
 	private boolean ativo;
 	private boolean realizado;
-
+	private LocalDateTime dataDeCriacao = LocalDateTime.now();
+	
 	public Tarefa() {
 
 	}
@@ -27,6 +30,10 @@ public class Tarefa {
 		this.descricao = descricao;
 		this.ativo = ativo;
 		this.realizado = realizado;
+	}
+
+	public LocalDateTime getDataDeCriacao() {
+		return dataDeCriacao;
 	}
 
 	public Long getId() {
