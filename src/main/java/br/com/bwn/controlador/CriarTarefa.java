@@ -3,6 +3,7 @@ package br.com.bwn.controlador;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bwn.modelo.Tarefa;
@@ -45,7 +44,21 @@ public class CriarTarefa {
 			return new ResponseEntity<Tarefa>(new Tarefa(), HttpStatus.NOT_FOUND);
 		}
 	}
+
+	@GetMapping(value = "/tarefasRealizadas")
+	public List<Tarefa> buscarTodasAsTarefasRealizadas() {
+		List<Tarefa> buscar = repositorio.findAll().stream().filter(tarefa -> tarefa.isRealizado() == true)
+				.collect(Collectors.toList());
+		return buscar;
+	}
 	
+	@GetMapping(value = "/tarefasAtivas")
+	public List<Tarefa> buscarTodasAsTarefasAtivas() {
+		List<Tarefa> buscar = repositorio.findAll().stream().filter(tarefa -> tarefa.isAtivo() == true)
+				.collect(Collectors.toList());
+		return buscar;
+	}
+
 	@GetMapping
 	public List<Tarefa> encontrarTodasAsTarefas() {
 		return repositorio.findAll();
@@ -63,9 +76,9 @@ public class CriarTarefa {
 			return new ResponseEntity<Tarefa>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Tarefa> editarTarefa(@PathVariable("id") long id, @RequestBody Tarefa editarTarefa){
+	public ResponseEntity<Tarefa> editarTarefa(@PathVariable("id") long id, @RequestBody Tarefa editarTarefa) {
 		Optional<Tarefa> tarefaAntiga = repositorio.findById(id);
 		if (tarefaAntiga.isPresent()) {
 			tarefaAntiga.get().setNome(editarTarefa.getNome());
@@ -79,18 +92,17 @@ public class CriarTarefa {
 			return new ResponseEntity<Tarefa>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Tarefa> deletarTarefa(@PathVariable("id") long id) {
 		Optional<Tarefa> tarefa = repositorio.findById(id);
 		if (tarefa.isPresent()) {
-			repositorio.deleteById(id);;
+			repositorio.deleteById(id);
+			;
 			return new ResponseEntity<Tarefa>(tarefa.get(), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<Tarefa>(HttpStatus.NOT_FOUND);
 		}
 	}
-
-	
 
 }
